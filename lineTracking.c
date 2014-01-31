@@ -19,7 +19,7 @@
 |*    [I/O Port]              [Name]              [Type]              [Description]                       *|
 |*    Port B                  motorB              NXT                 Right motor                         *|
 |*    Port C                  motorC              NXT                 Left motor                          *|
-|*    Port 1                  lightSensor         Light Sensor        Back mounted                        *|
+|*    Port 3                  lightSensor         Light Sensor        Back mounted                        *|
 \*---------------------------------------------------------------------------------------------------4246-*/
 
 /*calibrate: returns the average of the measured dark and light values to be used as a threshold.
@@ -37,19 +37,41 @@ int calibrate(){
     wait1Msec(50);
     motor[motorB] = 0;
     return (darkNum+lightNum)/2;
-
 }
 
 task main(){
 	wait1Msec(50);  //wait 50 milliseconds to initialize the light sensor.
-	thresh = calibrate();
+	//int thresh = calibrate();
+
+	int thresh = 45;
+	int turnRight = 0;
 	while(true){
-		if(SensorValue[lightSensor] < there){
+		if(SensorValue[lightSensor] < thresh){ //dark!
+			//go straight
 			motor[motorB] = 60;                  // Motor B is run at a 60 power level.
-			motor[motorC] = 20;                  // Motor C is run at a 20 power level.
-		} else {
-			motor[motorB] = 20;                  // Motor B is run at a 20 power level.
-			motor[motorC] = 60;                  // Motor C is run at a 60 power level.
+			motor[motorC] = 60;                  // Motor C is run at a 20 power level.
+			} else {
+
+			int waitCtr = 400;
+			while(SensorValue[lightSensor] > 45){
+				if (turnRight){
+					motor[motorB] = 50;
+					motor[motorC] = -20;
+					turnRight = 0;
+				} else {
+					motor[motorC] = 50;
+					motor[motorB] = -20;
+					turnRight = 1;
+				}
+				int time = 0;
+				while (SensorValue[lightSensor] > 45 && time < waitCtr)
+				{
+					time++;
+					wait1Msec(1);
+				}
+//				wait1Msec(waitCtr);
+				waitCtr +=700;
+			}
 		}
 	}
 }
