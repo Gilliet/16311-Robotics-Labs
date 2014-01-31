@@ -29,15 +29,19 @@ int calibrate(){
     int darkNum = SensorValue[lightSensor];
     //scoot a little
     motor[motorB] = 60;
+    wait1Msec(50);
+    motor[motorB] = 0;
     int lightNum = SensorValue[lightSensor];
     //scoot back
     motor[motorB] = -60;
+    wait1Msec(50);
+    motor[motorB] = 0;
     return (darkNum+lightNum)/2;
 
 }
 
 task main(){
-	wait1Msec(50);                        // The program waits 50 milliseconds to initialize the light sensor.
+	wait1Msec(50);  //wait 50 milliseconds to initialize the light sensor.
 	thresh = calibrate();
 	while(true){
 		if(SensorValue[lightSensor] < there){
