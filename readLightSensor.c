@@ -12,20 +12,24 @@ task main()
 		int lightVal = SensorValue[lightSensor];
 		//int prop = onEdge - SensorValue[lightSensor];
 		if (lightVal <= 35) {
-			motor[motorB] = -20;
-			motor[motorC] = 5;
+			motor[motorB] = -25;
+			motor[motorC] = 6;
 		}
-		else if(lightVal < 38) {
+		else if(lightVal <= 38) {
 			motor[motorB] = -5;
 			motor[motorC] = 10;
 		}
 		else if (lightVal < 40) {
 			motor[motorB] = 5;
-			motor[motorC] = 40;
+			motor[motorC] = 20;
+		}
+		else if (lightVal <= 42) {
+			motor[motorB] = 5;
+			motor[motorC] = 20;
 		}
 		else if (lightVal < 45) {
-			motor[motorB] = 28;
-			motor[motorC] = 30;
+			motor[motorB] = 22;
+			motor[motorC] = 25;
 		}
 		else if (lightVal == 45) {
 			motor[motorB] = 20;
@@ -44,6 +48,6 @@ task main()
 			motor[motorC] = -30;
 		}
 		writeDebugStream("LightSensor is : %d\n", lightVal);
-		wait1Msec(20);
+		wait1Msec(10);
 	}
 }
