@@ -12,23 +12,65 @@ int vtop (float v) {
 	return (int)((102.313 * v) + 0.000179047);
 }
 
+float crazyx (float t) {
+	return 0.02 * (5.0 * cos(9.0 * t / 20.0) - 4 * cos(t / 4.0));
+}
+float crazyy (float t) {
+	return 0.02 * (-4.0 * sin(t / 4.0) - 5.0 * sin(9.0 * t / 20.0));
+}
+
+float r (float t) {
+	return 1 + (((abs(cos(t * 3))) + (0.25 - (abs(cos(t * 3 + PI/2.0)))) * 2.0) / (2.0 + abs(cos(t * 6.0 + PI / 2.0)) * 8));
+}
+
+float lotusx (float t) {
+	return .5 * r(t) * cos(t);
+}
+float lotusy (float t) {
+	return .5 * r(t) * sin(t);
+}
+
+
+float ninex (float t) {
+	if (t < 10) {
+		return t * 1.5;
+		} else if (10 < t < 20) {
+		return (t - 10);
+		} else {
+		return 10;
+	}
+}
+float niney (float t) {
+	if (t < 5) {
+		return 0;
+		} else  if (5 < t < 15) {
+		return -(t-5) * .5;
+		} else {
+		return 5;
+	}
+}
+
+
 task main()
 {
 
 	ClearTimer(T2);
 	float t = 0;
-	int lastt = time10[T2];
+	float lastt = time10[T2];
 	float des_x;
 	float des_y;
-	float K = 1; // GAIN
-	float x = 0;
+	float K = .1; // GAIN
+	float D = 1;
+	float x = 0.0;
 	float y = 0;
 	float vl;
 	float vr;
 	float pose = 0;
 	int lenc = nMotorEncoder[motorB];
 	int renc = nMotorEncoder[motorC];
-	while (t < 63.0)
+	float lastex = 0;
+	float lastey = 0;
+	while (t < 125.5)
 	{
 		// DEAD RECKONING
 		int newl = nMotorEncoder[motorB];
@@ -49,17 +91,24 @@ task main()
 		wait1Msec(10);
 		t += (time10[T2] - lastt) / 100.0;
 		lastt = time10[T2];
-		des_x = -100;
-		des_y = -100;
+		des_x = crazyx(t) * 100;
+		des_y = crazyy(t) * 100;
+//		writeDebugStream("%f",des_y);
 		// END TRAJECTORY
 
 		nxtDisplayTextLine(2,"%f,",des_x);
 		nxtDisplayTextLine(3,"%f",des_y);
 		nxtDisplayTextLine(4,"%f",(pose*180.0)/PI);
-		float dx = K * (des_x - x);
-		float dy = K * (des_y - y);
-		float outV = cos(pose) * dx + sin(pose) * dy;
-		float outw = cos(pose) * dy - sin(pose) * dx;
+		float dx = K * (des_x - x); // ERROR
+		float dy = K * (des_y - y); // PROPORTIONAL GAIN
+		float vx = D * ((dx - lastex) / (t - lastt)); // DIFFERENTIAL GAIN
+		float vy = D * ((dy - lastey) / (t - lastt));
+		lastex = dx;
+		lastey = dy;
+
+		writeDebugStream("x:%f,y:%f\n",dx,dy);
+		float outV = cos(pose) * (dx + vx) + sin(pose) * dy;
+		float outw = cos(pose) * (dy + vx) - sin(pose) * dx;
 		float outvl = outV + WB * outw / 2;
 		float outvr = outV - WB * outw / 2;
 		int LM = vtop(outvl);
