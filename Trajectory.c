@@ -8,6 +8,44 @@ float trajy (float t) {
 	return (0.2 * sin(t / 10.0) * sin(t / 5.0));
 }
 
+/****numbered functions***/
+
+float onex (float t) {
+	return (0.5 * cos(t / 10.0) * sin(t / 10.0));
+}
+float oney (float t) {
+	return (0.2 * sin(t / 10.0) * sin(t / 5.0));
+}
+
+float twox (float t) {
+	return (0.2 * sin((3.0*t) / 5.0));
+}
+float twoy (float t) {
+	return (0.2 * cos(2.0*(t/5.0+PI/4.0)));
+}
+
+float threex (float t) {
+	return (0.2 * cos(t/10.0)*cos(t/5.0))-0.2;
+}
+float threey (float t) {
+	return (0.2 * cos((3.0*t)/10.0)*sin(t/10.0));
+}
+
+float fourx (float t) {
+	return (0.2 * (0.5*cos((3.0*t)/10.0)-0.75*cos(t/5.0)) + 0.05);
+}
+float foury (float t) {
+	return (0.2 * (-0.75*sin(t/5.0)-0.5*sin((3.0*t)/10.0)));
+}
+
+float fivex (float t) {
+	return (0.1*(-2.0*(pow(cos(t/5.0),2.0))-(sin(t/10.0))+1.0)*(sin(t/5.0)));
+}
+
+float fivey (float t) {
+	return (0.1*(cos(t/5.0))*(-2.0*(pow(cos(t/5.0),3.0))-(sin(t/10.0))+1.0)) + 0.1; //+0.1 is for offset
+}
+
 float sixx (float t) {
 	return 0.1 * (2.0 * (pow(cos(t / 12.0),3.0)) + 1) * (sin(t / 4.0));
 }
@@ -15,19 +53,11 @@ float sixy (float t) {
 	return 0.1 * (cos(t / 4.0)) * (1 - 2 * (pow(sin(t / 4.0),4.0))) - 0.1;
 }
 
+/****end numbered functions***/
+
 int vtop (float v) {
 	return (int)((102.313 * v) + 0.000179047);
 }
-
-float fivex (float t) {
-	return (0.1*(-2.0*(pow(cos(t/5.0),2.0))-(sin(t/10.0))+1.0)*(sin(t/5.0)));
-}
-
-
-float fivey (float t) {
-	return (0.1*(cos(t/5.0))*(-2.0*(pow(cos(t/5.0),3.0))-(sin(t/10.0))+1.0)) + 0.1; //+0.1 is for offset
-}
-
 
 float crazyx (float t) {
 	return 0.02 * (5.0 * cos(9.0 * t / 20.0) - 4 * cos(t / 4.0));
