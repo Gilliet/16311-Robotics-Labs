@@ -117,7 +117,7 @@ task main()
 	int renc = nMotorEncoder[motorC];
 	float lastex = 0;
 	float lastey = 0;
-	while (t < 63.0)
+	while (t < 32)
 	{
 		// DEAD RECKONING
 		int newl = nMotorEncoder[motorB];
@@ -138,8 +138,8 @@ task main()
 		wait1Msec(10);
 		t += (time10[T2] - lastt) / 100.0;
 		lastt = time10[T2];
-		des_x = trajx(t) * 100;
-		des_y = trajy(t) * 100;
+		des_x = twox(t) * 100;
+		des_y = twoy(t) * 100;
 		//		writeDebugStream("%f",des_y);
 		// END TRAJECTORY
 
