@@ -10,19 +10,9 @@
 typedef struct graphNode{
 	float x;
 	float y;
-	graphNode *neighbors[5]; //array of pointers to neighbors. has at most 5, including .
+	graphNode *neighbors[5];
+	//ptrs to neighbors! any node has <= 5 neighbors, including start & goal.
 } node;
-
-typedef struct obstacle{
-	float c0x;	//its four corners. should go clockwise around it and include padding
-	float c0y;
-	float c1x;
-	float c1y;
-	float c2x;
-	float c2y;
-	float c3x;
-	float c3y;
-} obstacle;
 
 
 float max(float a, float b){
@@ -36,7 +26,7 @@ float min(float a, float b){
 }
 
 /* L1Distance: computes the L1 (manhattan) distance between st and end.
-*
+*/
 float L1Distance(node st, node end){
 	if (st == NULL || end == NULL){
 		writeDebugStream("null point passed to L1Distance! \n");
@@ -44,7 +34,7 @@ float L1Distance(node st, node end){
 	}
 	return abs((end.x)-(st.x))+abs((end.y)-(st.y));
 }
-*/
+
 /* L2Distance: computes the L2 (euclidean) distance between st and end.
 */
 float L2Distance(node st, node end){
@@ -63,57 +53,9 @@ float cost(node st, node end, node goal){
 }
 */
 
-/* crosses: does a path from s1 to e1 cross a path from s2 to e2? 1 = yes, 0 = no
-*/
-int pathsCross(node s1, node e1,float s2x,float s2y,float e2x, float e2y){
-	float ub1 = max(s1.y,e1.y);
-	float db1 = min(s1.y,e1.y);
-	float rb1 = max(s1.x,e1.x);
-	float lb1 = min(s1.x,e1.x);
-
-	float ub2 = max(s2y,e2y);
-	float db2 = min(s2y,e2y);
-	float rb2 = max(s2x,e2x);
-	float lb2 = min(s2x,e2x);
-
-	if ((ub1 >= ub2 && db1 <= ub2)||(ub1 >= db2 && db1 <= db2)){ //does 2 fall inside 1?
-		if ((rb1 >= rb2 && lb1 <= rb2)||(rb1 >= lb2 && lb1 <= lb2)){
-			return 1;
-		}
-	}
-  if ((ub2 >= ub1 && db2 <= ub1)||(ub2 >= db1 && db2 <= db1)){ //does 1 fall inside 2?
-		if ((rb2 >= rb1 && lb2 <= rb1)||(rb2 >= lb1 && lb2 <= lb1)){
-			return 1;
-		}
-	}
-	return 0;
-}
-
-/*crossesObstacle: determines if a path from st to end will cross an obstacle
-*	does this by determining if the path will cross an imaginary path made
-*	by the corners of the object. returns 1 for true, 0 for false
-*     Note: the circles, for simplicity, are treated as diamonds: <o>
-*/
-int crossesObstacle(node st, node end, obstacle *obstacles){
-	for(int i = 0; i < NUM_OBSTACLES; i++){
-		if  (pathsCross(st,end,obstacles[i].c1,obstacles[i].c2)
-			|| pathsCross(st,end,obstacles[i].c2,obstacles[i].c3)
-		  || pathsCross(st,end,obstacles[i].c3,obstacles[i].c4)
-		  || pathsCross(st,end,obstacles[i].c4,obstacles[i].c1)){
-			return 1;
-		}
-	}
-	return 0;
-}
-
-
 task main()
 {
 	//build the graph, hardcoded and miserable
-
-  //fill in obstacle array
-//	obstacle obArray[NUM_OBSTACLES];
-
 	node graph[NUM_WAYPOINTS];
 	//bottom row
   graph[0].x = 0.1524; graph[0].y = 0.1524;
@@ -162,11 +104,8 @@ task main()
 	//now add start and end- go through waypoints, finding closest valid one.
 	//connect the start and end to those points.
 	for(int i = 0; i < NUM_WAYPOINTS; i++){
-		float d1 = L2Distance(st,graph[i]);
-		float d2 = L2Distance(st,*(st.neighbors[0]));
-		if (d1 < d2){}
- 	//	&& (!crossesObstacle(st,graph[i],obArray))){
-	//		st.neighbors[0] = &(graph[i]);
-	//  }
+		if (L2Distance(st,graph[i]) < L2Distance(st,*(st.neighbors[0]))){
+			st.neighbors[0] = &(graph[i]);
+	  }
   }
 }
