@@ -1,11 +1,25 @@
-#define WB 11.5
-#define RAD 2.8
-#define R1 -10  //30
-#define L1 -20  //15
-#define R2 70  //52
-#define L2 40  //59
-#define R3 25  //10
-#define L3 25  //20
+#define WB 11.27//11.5
+#define RAD 2.7//2.8               //1. over 2. over 3. under
+#define R1 30 //10 //-10  //30
+#define L1 15//30 //-20  //15
+#define R2 52//-50 //70  //52
+#define L2 59//-40 //40  //59
+#define R3 10//30 //25  //10
+#define L3 20//10 //25  //20
+
+float displayDegrees(float degIn){
+	if (degIn >= 0){
+		while(degIn > 360.0){
+		  degIn = degIn - 360.0;
+		}
+	} else {
+	  while(degIn < -360.0){
+	    degIn = degIn + 360.0;
+	  }
+  }
+  return degIn;
+}
+
 
 task main()
 {
@@ -48,15 +62,15 @@ task main()
 			lasttime = time;
 			int newl = nMotorEncoder[motorB];
 			int newr = nMotorEncoder[motorC];
-			vl = RAD * (newl - lenc) * (PI / 180.0) * 1.04*(1.0-(currL-currR)/1000000.0);
-			vr = RAD * (newr - renc) * (PI / 180.0) * 1.04*(1.0-(currL-currR)/1000000.0);
+			vl = RAD * (newl - lenc) * (PI / 180.0); ////* 1.04*(1.0+(currL)/10000.0);
+			vr = RAD * (newr - renc) * (PI / 180.0); //* 1.04*(1.0+(currR)/10000.0);
 			renc = newr;
 			lenc = newl;
 			float V = (vr + vl) / 2;
 			float w = (vr - vl) / WB;
 			float theta = pose + w * dt / 2;
-			x = x + (V * cos(theta) * dt);
-			y = y + (V * sin(theta) * dt);
+			x = x + (V * cos(theta) * dt);//*(1.0-((currL+currR)-120.0)/500.0);
+			y = y + (V * sin(theta) * dt);//*(1.0-((currL+currR)-120.0)/500.0);
 			pose = pose + w;
 			nxtDisplayTextLine(2,"%f,",x / 2);
 			nxtDisplayTextLine(3,"%f",y / 2);
@@ -66,7 +80,7 @@ task main()
 		}
 		nxtDisplayTextLine(2,"%f,",x / 2);
 		nxtDisplayTextLine(3,"%f",y / 2);
-		nxtDisplayTextLine(4,"%f",(pose * 180.0) / PI);
+		nxtDisplayTextLine(4,"%f",displayDegrees((pose * 180.0) / PI));
 		motor[motorB] = 0;
 		motor[motorC] = 0;
 		wait1Msec(5000);
@@ -75,7 +89,7 @@ task main()
 	while (true) {
 		nxtDisplayTextLine(2,"%f,",x/ 2);
 		nxtDisplayTextLine(3,"%f",y / 2);
-		nxtDisplayTextLine(4,"%f",(pose * 180) / PI);
+		nxtDisplayTextLine(4,"%f",displayDegrees((pose * 180) / PI));
 
 }
 }
