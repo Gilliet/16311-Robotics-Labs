@@ -1,7 +1,7 @@
 #define BOARD_WIDTH 1.219
 #define BOARD_HEIGHT 2.438 //lengths in meters, yo
 #define NUM_OBSTACLES 6
-#define NUM_WAYPOINTS 10
+#define NUM_WAYPOINTS 12
 #define START_X 0.01 //dummy values
 #define START_Y 0.01
 #define GOAL_X 0.02
@@ -96,8 +96,7 @@ int pathsCross(node s1, node e1,float s2x,float s2y,float e2x, float e2y){
 */
 int crossesObstacle(node st, node end, obstacle *obstacles){
 	for(int i = 0; i < NUM_OBSTACLES; i++){
-
-		if  (pathsCross(st,end,obstacles[i].c1x,obstacles[i].c1y,obstacles[i].c1x)
+		if  (pathsCross(st,end,obstacles[i].c1,obstacles[i].c2)
 			|| pathsCross(st,end,obstacles[i].c2,obstacles[i].c3)
 		  || pathsCross(st,end,obstacles[i].c3,obstacles[i].c4)
 		  || pathsCross(st,end,obstacles[i].c4,obstacles[i].c1)){
@@ -128,7 +127,8 @@ task main()
 	graph[7].x = 1.676;  graph[7].y = 0.6096;
 	graph[8].x = 2.286;  graph[8].y = 0.762;
 	graph[9].x = 1.3716; graph[9].y = 0.4572;
-
+	graph[10].x = 1.3716; graph[10].y = 0.1524;
+	graph[11].x = 1.676; graph[11].y = 0.1524;
 	//set up neighbors. do we need to make the remaining ones NULL?
 	graph[0].neighbors[0] = &(graph[1]);
 	graph[1].neighbors[0] = &(graph[0]);
