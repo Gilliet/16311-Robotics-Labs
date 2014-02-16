@@ -56,6 +56,89 @@ float cost(node st, node end, node goal){
 }
 */
 
+float *makePath(float startx, float starty, float goalx, float goaly){
+	//build the graph, hardcoded and miserable
+	node graph[NUM_WAYPOINTS];
+	//bottom row
+  graph[0].x = 0.1524; graph[0].y = 0.1524;
+	graph[1].x = 0.762;	 graph[1].y = 0.1524;
+  graph[2].x = 0.9144; graph[2].y = 0.1524;
+	graph[3].x = 2.134;  graph[3].y = 0.1524;
+	//top row
+	graph[4].x = 0.3048; graph[4].y = 0.9144;
+	graph[5].x = 0.9144; graph[5].y = 1.067;
+	graph[6].x = 1.372;  graph[6].y = 1.067;
+	graph[7].x = 1.676;  graph[7].y = 0.6096;
+	graph[8].x = 2.286;  graph[8].y = 0.762;
+	graph[9].x = 1.3716; graph[9].y = 0.4572;
+	graph[10].x = 1.3716; graph[10].y = 0.1524;
+	graph[11].x = 1.676; graph[11].y = 0.1524;
+	//set up neighbors. do we need to make the remaining ones NULL?
+	graph[0].neighbors[0] = &(graph[1]);
+	graph[1].neighbors[0] = &(graph[0]);
+	graph[1].neighbors[1] = &(graph[2]);
+	graph[2].neighbors[0] = &(graph[1]);
+	graph[2].neighbors[1] = &(graph[9]);
+	graph[2].neighbors[2] = &(graph[10]);
+	graph[3].neighbors[0] = &(graph[7]);
+	graph[3].neighbors[1] = &(graph[8]);
+	graph[3].neighbors[2] = &(graph[11]);
+
+	graph[4].neighbors[0] = &(graph[5]);
+	graph[5].neighbors[0] = &(graph[4]);
+	graph[5].neighbors[1] = &(graph[6]);
+	graph[6].neighbors[0] = &(graph[5]);
+	graph[6].neighbors[1] = &(graph[7]);
+	graph[7].neighbors[0] = &(graph[6]);
+	graph[7].neighbors[1] = &(graph[9]);
+	graph[7].neighbors[2] = &(graph[3]);
+	graph[8].neighbors[0] = &(graph[3]);
+	graph[9].neighbors[0] = &(graph[2]);
+	graph[9].neighbors[1] = &(graph[7]);
+
+	graph[10].neighbors[0] = &(graph[2]);
+	graph[11].neighbors[0] = &(graph[3]);
+
+	//start and end
+	node st;
+	node goal;
+	st.x = startx;
+	st.y = starty;
+	goal.x = goalx;
+	goal.y = goaly;
+
+	//now add start and end- go through waypoints, finding closest valid one.
+	//connect the start and end to those points.
+	for(int i = 0; i < NUM_WAYPOINTS; i++){
+		if (st.neighbors[0] == NULL){
+			st.neighbors[0] = &graph[i];
+			graph[i].neighbors[3] = &st;
+		}else{
+			if (L2Distance(st,graph[i]) < L2Distance(st,*(st.neighbors[0]))){
+				st.neighbors[0] = &(graph[i]);
+				graph[i].neighbors[3] = &st;
+		  }
+		}
+
+		if (goal.neighbors[0] == NULL){
+		  goal.neighbors[0] = &graph[i];
+			graph[i].neighbors[4] = &goal;
+		}else{
+			if (L2Distance(goal,graph[i]) < L2Distance(goal,*(goal.neighbors[0]))){
+				goal.neighbors[0] = &(graph[i]);
+	  		graph[i].neighbors[4] = &goal;
+		  }
+		}
+  }
+
+	//now do dfs to find a path. dfs(start,goal)
+  //assumption: from path, we get a float * of points to travel to
+  float path[14];
+  path[0] = st.x; path[1] = st.y;
+  path[2] = goal.x; path[3] = goal.y;
+  return path;
+}
+/*
 task main()
 {
 	//build the graph, hardcoded and miserable
@@ -147,4 +230,4 @@ task main()
   		}
  	 }
 	}
-}
+}*/

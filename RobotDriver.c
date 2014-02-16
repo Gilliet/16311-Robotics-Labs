@@ -1,6 +1,6 @@
 #include "RobotModel.h"
 #include "RobotModel.c"
-//#define K .009
+#define K .009
 #define D -3
 
 
@@ -55,7 +55,7 @@ void driveTo(robotModel* rob, float des_x,float des_y)
 		motor[motorB] = LM;
 	}
 }
-
+/*
 task main()
 {
 	robotModel rob;
@@ -64,4 +64,4 @@ task main()
 	driveTo(&rob, 15.24 * 7, 15.24 * 2);
 	driveTo(&rob, 15.24 * 9, 15.24 * 3);
 	driveTo(&rob, 15.24 * 13, 15.24 * 1);
-}
+}*/
