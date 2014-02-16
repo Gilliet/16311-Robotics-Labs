@@ -12,6 +12,7 @@ typedef struct graphNode{
 	float y;
 	graphNode *neighbors[5];
 	//ptrs to neighbors! any node has <= 5 neighbors, including start & goal.
+	//start goes in index 3 if it's there, goal goes in index 4
 } node;
 
 
@@ -77,9 +78,11 @@ task main()
 	graph[1].neighbors[1] = &(graph[2]);
 	graph[2].neighbors[0] = &(graph[1]);
 	graph[2].neighbors[1] = &(graph[9]);
+	graph[2].neighbors[2] = &(graph[10]);
 	graph[3].neighbors[0] = &(graph[7]);
 	graph[3].neighbors[1] = &(graph[8]);
-	/*
+	graph[3].neighbors[2] = &(graph[11]);
+
 	graph[4].neighbors[0] = &(graph[5]);
 	graph[5].neighbors[0] = &(graph[4]);
 	graph[5].neighbors[1] = &(graph[6]);
@@ -91,7 +94,10 @@ task main()
 	graph[8].neighbors[0] = &(graph[3]);
 	graph[9].neighbors[0] = &(graph[2]);
 	graph[9].neighbors[1] = &(graph[7]);
-	*/
+
+	graph[10].neighbors[0] = &(graph[2]);
+	graph[11].neighbors[0] = &(graph[3]);
+
 	//start and end
 	node st;
 	node goal;
@@ -99,13 +105,44 @@ task main()
 	st.y = START_Y;
 	goal.x = GOAL_X;
 	goal.y = GOAL_Y;
-	st.neighbors[0] = &goal;// this is dangerous and should be changed
-	goal.neighbors[0] = &st;
+
 	//now add start and end- go through waypoints, finding closest valid one.
 	//connect the start and end to those points.
 	for(int i = 0; i < NUM_WAYPOINTS; i++){
-		if (L2Distance(st,graph[i]) < L2Distance(st,*(st.neighbors[0]))){
-			st.neighbors[0] = &(graph[i]);
-	  }
+		if (st.neighbors[0] == NULL){
+			st.neighbors[0] = &graph[i];
+			graph[i].neighbors[3] = &st;
+		}else{
+			if (L2Distance(st,graph[i]) < L2Distance(st,*(st.neighbors[0]))){
+				st.neighbors[0] = &(graph[i]);
+				graph[i].neighbors[3] = &st;
+		  }
+		}
+
+		if (goal.neighbors[0] == NULL){
+		  goal.neighbors[0] = &graph[i];
+			graph[i].neighbors[4] = &goal;
+		}else{
+			if (L2Distance(goal,graph[i]) < L2Distance(goal,*(goal.neighbors[0]))){
+				goal.neighbors[0] = &(graph[i]);
+	  		graph[i].neighbors[4] = &goal;
+		  }
+		}
   }
+
+  //for sanity's sake, print the graph to debug
+  writeDebugStream("start (%f5,%f5) goes to (%f5,%f5)\n", st.x,st.y,
+  									st.neighbors[0]->x,st.neighbors[0]->y);
+
+  writeDebugStream("goal (%f5,%f5) goes to (%f5,%f5)\n", goal.x,goal.y,
+  									goal.neighbors[0]->x,goal.neighbors[0]->y);
+  for(int i = 0; i < NUM_WAYPOINTS; i++){
+  	for(int j = 0; j < 5; j++){
+  		if (graph[i].neighbors[j] != NULL){
+  			  writeDebugStream("node %d (%f5,%f5) goes to (%f5,%f5)\n", i,
+  			  					graph[i].x,graph[i].y,
+  									graph[i].neighbors[j]->x,graph[i].neighbors[j]->y);
+  		}
+ 	 }
+	}
 }
