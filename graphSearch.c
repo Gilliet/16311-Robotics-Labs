@@ -1,4 +1,4 @@
-//#include William's DFS code
+#include "DFS.c"
 
 #define BOARD_WIDTH 1.219
 #define BOARD_HEIGHT 2.438 //lengths in meters, yo
@@ -8,7 +8,8 @@
 #define START_Y 0.01
 #define GOAL_X 0.02
 #define GOAL_Y 0.01
-
+/*
+already defined in dfs!
 typedef struct graphNode{
 	float x;
 	float y;
@@ -16,7 +17,7 @@ typedef struct graphNode{
 	//ptrs to neighbors! any node has <= 5 neighbors, including start & goal.
 	//start goes in index 3 if it's there, goal goes in index 4
 } node;
-
+*/
 
 float max(float a, float b){
 	if (a > b) return a;
@@ -56,7 +57,7 @@ float cost(node st, node end, node goal){
 }
 */
 
-float *makePath(float startx, float starty, float goalx, float goaly){
+path *makePath(float startx, float starty, float goalx, float goaly){
 	//build the graph, hardcoded and miserable
 	node graph[NUM_WAYPOINTS];
 	//bottom row
@@ -133,10 +134,14 @@ float *makePath(float startx, float starty, float goalx, float goaly){
 
 	//now do dfs to find a path. dfs(start,goal)
   //assumption: from path, we get a float * of points to travel to
-  float path[14];
-  path[0] = st.x; path[1] = st.y;
-  path[2] = goal.x; path[3] = goal.y;
-  return path;
+  path *traveledPath;
+  node visitedNodes[14];
+  int yay = DFS (traveledPath, &st, &goal, visitedNodes, 0);
+  if (!yay) writeDebugStream("DFS unsuccessful! \n");
+  //path[0] = st.x; path[1] = st.y;
+  //path[2] = goal.x; path[3] = goal.y;
+
+  return traveledPath;
 }
 /*
 task main()

@@ -2,7 +2,7 @@
 #include "RobotModel.h"
 #include "RobotDriver.c"
 #include "graphSearch.c"
-//#include William's code
+#include "DFS.c"
 
 task main()
 {
@@ -10,15 +10,15 @@ task main()
 	float sty = 0.1;
 	float glx = 0.1;
 	float gly = 0.5;
-	int i = 0;
+
 	robotModel rob;
 	init(&rob);
-	float *path = makePath(stx,sty,glx,gly);
-		writeDebugStream("going!\n");
-	while (path[i] != NULL){
-		writeDebugStream("going to (%f2, %f2)\n",path[i],path[i+1]);
-		driveTo(&rob,path[i]*100,path[i+1]*100);
-		path = path+2;
-	}
+	path *botPath = makePath(stx,sty,glx,gly);
+	writeDebugStream("going!\n");
+
+	for(int i = 0; i < botPath->nElems; i++){
+		writeDebugStream("going to (%f2, %f2)\n", botPath->coords[i], botPath->coords[i+1]);
+	  driveTo(&rob,(botPath->coords[i])*100,(botPath->coords[i+1])*100);
+  }
 
 }

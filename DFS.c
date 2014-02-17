@@ -24,20 +24,20 @@ int alreadyVisited (node* visited, int n, node* next) {
 
 int DFS (path* p, node* currNode, node* endNode, node* visited, int nVisited) {
 	// Mark the current node as visited.
-	visited[nVisited] = currNode;
+	visited[nVisited] = *currNode;
 	nVisited ++;
 	// Number of elements in the path coming into this node
 	int nPath = p->nElems;
 	// If we're at our destination, check pointer equality, cause that's a thing
 	if (currNode == endNode) {
-		p->coords[2*nPath] = currNode.x;
-		p->coords[2*nPath+1] = currNode.y;
-		p.nElems++;
+		p->coords[2*nPath] = currNode->x;
+		p->coords[2*nPath+1] = currNode->y;
+		p->nElems++;
 		return 1;
 	} else {
 		// We're not at the destination, so lets see if we are part of the path
-		p->coords[2*nPath] = currNode.x;
-		p->coords[2*nPath + 1] = currNode.y;
+		p->coords[2*nPath] = currNode->x;
+		p->coords[2*nPath + 1] = currNode->y;
 		int i = 0;
 		// Check through each of our neighbors
 		for (int i = 0; i < 5; i++) {
@@ -64,12 +64,4 @@ int DFS (path* p, node* currNode, node* endNode, node* visited, int nVisited) {
 		// Each point in the DFS keeps track of the variables that it needs for
 		// successful recursive calls, so we shouldn't have to reset anything.
 	}
-}
-
-task main()
-{
-
-
-
-
 }
