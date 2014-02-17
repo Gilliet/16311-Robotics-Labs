@@ -1,6 +1,6 @@
 #include "RobotModel.h"
 
-void init (robotModel* rob) {
+void init (robotModel* rob,float stx,float sty,float stpose) {
 	rob->x = 0.0;
 	rob->y = 0.0;
 	rob->pose = 0.0;

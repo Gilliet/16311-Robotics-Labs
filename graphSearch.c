@@ -41,12 +41,13 @@ float L1Distance(node st, node end){
 
 /* L2Distance: computes the L2 (euclidean) distance between st and end.
 */
-float L2Distance(node st, node end){
+float L2Distance(node *st, node *end){
 	if (st == NULL || end == NULL){
-		writeDebugStream("null point passed to L1Distance! \n");
+		writeDebugStream("null point passed to L2Distance! \n");
 		return 1000000.0; //don't go this way, something's wrong
 	}
-	return sqrt(pow((end.x)-(st.x),2.0)+pow((end.y)-(st.y),2.0));
+	writeDebugStream("endx: %f2 stx: %f2 endy: %f2 sty: %f2\n",end->x,st->x,end->y,st->y);
+	return sqrt(pow((end->x)-(st->x),2.0)+pow((end->y)-(st->y),2.0));
 }
 
 /* cost: computes the cost of the edge between st and end.
@@ -59,7 +60,8 @@ float cost(node st, node end, node goal){
 
 path *makePath(float startx, float starty, float goalx, float goaly){
 	//build the graph, hardcoded and miserable
-	node graph[NUM_WAYPOINTS];
+	writeDebugStream("making path.\n");
+  node graph[NUM_WAYPOINTS];
 	//bottom row
   graph[0].x = 0.1524; graph[0].y = 0.1524;
 	graph[1].x = 0.762;	 graph[1].y = 0.1524;
@@ -76,29 +78,42 @@ path *makePath(float startx, float starty, float goalx, float goaly){
 	graph[11].x = 1.676; graph[11].y = 0.1524;
 	//set up neighbors. do we need to make the remaining ones NULL?
 	graph[0].neighbors[0] = &(graph[1]);
+		graph[0].neighbors[1] = NULL; graph[0].neighbors[2] = NULL;	graph[0].neighbors[3] = NULL;		graph[0].neighbors[4] = NULL;
 	graph[1].neighbors[0] = &(graph[0]);
 	graph[1].neighbors[1] = &(graph[2]);
+		graph[1].neighbors[2] = NULL;	graph[1].neighbors[3] = NULL;		graph[1].neighbors[4] = NULL;
 	graph[2].neighbors[0] = &(graph[1]);
 	graph[2].neighbors[1] = &(graph[9]);
 	graph[2].neighbors[2] = &(graph[10]);
+		graph[2].neighbors[3] = NULL;		graph[2].neighbors[4] = NULL;
 	graph[3].neighbors[0] = &(graph[7]);
 	graph[3].neighbors[1] = &(graph[8]);
 	graph[3].neighbors[2] = &(graph[11]);
+graph[3].neighbors[3] = NULL;		graph[3].neighbors[4] = NULL;
+
 
 	graph[4].neighbors[0] = &(graph[5]);
+	graph[4].neighbors[1] = NULL;		graph[4].neighbors[2] = NULL; graph[4].neighbors[3] = NULL;		graph[4].neighbors[4] = NULL;
 	graph[5].neighbors[0] = &(graph[4]);
 	graph[5].neighbors[1] = &(graph[6]);
+	graph[5].neighbors[2] = NULL;		graph[5].neighbors[3] = NULL; graph[5].neighbors[4] = NULL;
 	graph[6].neighbors[0] = &(graph[5]);
 	graph[6].neighbors[1] = &(graph[7]);
+	graph[6].neighbors[2] = NULL;		graph[6].neighbors[3] = NULL; graph[6].neighbors[4] = NULL;
 	graph[7].neighbors[0] = &(graph[6]);
 	graph[7].neighbors[1] = &(graph[9]);
 	graph[7].neighbors[2] = &(graph[3]);
+		graph[7].neighbors[3] = NULL; graph[7].neighbors[4] = NULL;
 	graph[8].neighbors[0] = &(graph[3]);
+	graph[8].neighbors[1] = NULL;		graph[8].neighbors[2] = NULL; graph[8].neighbors[3] = NULL;		graph[8].neighbors[4] = NULL;
 	graph[9].neighbors[0] = &(graph[2]);
 	graph[9].neighbors[1] = &(graph[7]);
+	graph[9].neighbors[2] = NULL;		graph[9].neighbors[3] = NULL; graph[9].neighbors[4] = NULL;
 
 	graph[10].neighbors[0] = &(graph[2]);
+	graph[10].neighbors[1] = NULL;		graph[10].neighbors[2] = NULL; graph[10].neighbors[3] = NULL;		graph[10].neighbors[4] = NULL;
 	graph[11].neighbors[0] = &(graph[3]);
+	graph[11].neighbors[1] = NULL;		graph[11].neighbors[2] = NULL; graph[11].neighbors[3] = NULL;		graph[11].neighbors[4] = NULL;
 
 	//start and end
 	node st;
@@ -107,31 +122,42 @@ path *makePath(float startx, float starty, float goalx, float goaly){
 	st.y = starty;
 	goal.x = goalx;
 	goal.y = goaly;
+	st.neighbors[0] = NULL;
+	goal.neighbors[0] = NULL;
+writeDebugStream("set up neighbors, except for start and goal.\n");
 
 	//now add start and end- go through waypoints, finding closest valid one.
 	//connect the start and end to those points.
-	for(int i = 0; i < NUM_WAYPOINTS; i++){
+
+ for(int i = 0; i < 1; i++){
 		if (st.neighbors[0] == NULL){
+			writeDebugStream("set st's initial neighbor. \n");
 			st.neighbors[0] = &graph[i];
 			graph[i].neighbors[3] = &st;
+			writeDebugStream("st.x: %f2 st.y: %f2 stn.x: %f2 stn.y: %f2\n",st.x,st.y,st.neighbors[0]->x,st.neighbors[0]->y);
+
 		}else{
-			if (L2Distance(st,graph[i]) < L2Distance(st,*(st.neighbors[0]))){
+		  	if (L2Distance(&st,&graph[i]) < L2Distance(&st,(st.neighbors[0]))){
 				st.neighbors[0] = &(graph[i]);
 				graph[i].neighbors[3] = &st;
 		  }
+		  writeDebugStream("st.x: %f2 st.y: %f2 stn.x: %f2 stn.y: %f2\n",st.x,st.y,st.neighbors[0]->x,st.neighbors[0]->y);
+
 		}
 
 		if (goal.neighbors[0] == NULL){
+			writeDebugStream("set goal's initial neighbor. \n");
 		  goal.neighbors[0] = &graph[i];
 			graph[i].neighbors[4] = &goal;
 		}else{
-			if (L2Distance(goal,graph[i]) < L2Distance(goal,*(goal.neighbors[0]))){
+			if (L2Distance(&goal,&graph[i]) < L2Distance(&goal,(goal.neighbors[0]))){
 				goal.neighbors[0] = &(graph[i]);
 	  		graph[i].neighbors[4] = &goal;
 		  }
 		}
   }
 
+	writeDebugStream("successfully put in start and goal.\n");
 	//now do dfs to find a path. dfs(start,goal)
   //assumption: from path, we get a float * of points to travel to
   path *traveledPath;
@@ -141,6 +167,7 @@ path *makePath(float startx, float starty, float goalx, float goaly){
   //path[0] = st.x; path[1] = st.y;
   //path[2] = goal.x; path[3] = goal.y;
 
+	writeDebugStream("DFS completed.\n");
   return traveledPath;
 }
 /*

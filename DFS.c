@@ -11,7 +11,7 @@ typedef struct graphNode{
 // Path struct. It's good stuff.
 typedef struct path {
 	int nElems;
-	float coords[14];
+	float coords[20];//[14];
 } path;
 
 // Small helper.
@@ -24,7 +24,9 @@ int alreadyVisited (node* visited, int n, node* next) {
 
 int DFS (path* p, node* currNode, node* endNode, node* visited, int nVisited) {
 	// Mark the current node as visited.
-	visited[nVisited] = *currNode;
+  writeDebugStream("visiting: (%f2,%f2)\n",currNode->x,currNode->y);
+	if (p == NULL) writeDebugStream("p is null?! \n");
+  visited[nVisited] = *currNode;
 	nVisited ++;
 	// Number of elements in the path coming into this node
 	int nPath = p->nElems;
@@ -44,6 +46,7 @@ int DFS (path* p, node* currNode, node* endNode, node* visited, int nVisited) {
 			// To make sure we don't infinitely loop, check that we haven't already
 			// visited the node, especially important since the graph has undirected
 		  // edges.
+		writeDebugStream("nVisited: %d \n",nVisited);
 			if(!alreadyVisited(visited, nVisited, currNode->neighbors[i])) {
 				// Reset the location in the path after each unsuccessful branch we explore
 				p->nElems = nPath + 1;
