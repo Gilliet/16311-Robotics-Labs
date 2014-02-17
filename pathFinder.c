@@ -126,14 +126,14 @@ task main()
 
 	float cs[16];
 	path botPath;
-	botPath.nElems = 0;
+	botPath.nElems = 1;
 	botPath.coords = cs;
 	botPath.coords[0] = startx;
 	botPath.coords[1] = starty;
 
 	node visitedNodes[14];
 	int yay = 0;
-	yay = DFS(&botPath, &st, &goal, visitedNodes, 0);
+	yay = DFS(&botPath, &st, &goal);
 
 
 	if (!yay) writeDebugStream("DFS unsuccessful! \n");
