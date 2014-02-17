@@ -130,7 +130,7 @@ writeDebugStream("set up neighbors, except for start and goal.\n");
 	botPath.coords[0] = startx;
 	botPath.coords[1] = starty;
 
-  node visitedNodes[14];
+  node visitedNodes[16];
   int yay = 0;
   yay = DFS(&botPath, &st, &goal, visitedNodes, 0);
 
