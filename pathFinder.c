@@ -123,14 +123,14 @@ writeDebugStream("set up neighbors, except for start and goal.\n");
 	writeDebugStream("successfully put in start and goal.\n");
 	//now do dfs to find a path. dfs(start,goal)
 
-	float cs[20];
+	float cs[14];
 	path botPath;
 	botPath.nElems = 0;
 	botPath.coords = cs;
 	botPath.coords[0] = startx;
 	botPath.coords[1] = starty;
 
-  node visitedNodes[16];
+  node visitedNodes[14];
   int yay = 0;
   yay = DFS(&botPath, &st, &goal, visitedNodes, 0);
 

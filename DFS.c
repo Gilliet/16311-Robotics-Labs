@@ -11,13 +11,13 @@ typedef struct graphNode{
 // Path struct. It's good stuff.
 typedef struct path {
 	int nElems;
-	float coords[20];//[14];
+	float coords[14];
 } path;
 
 // Small helper.
 int alreadyVisited (node* visited, int n, node* next) {
 	for(int i = 0; i < n; i++) {
-		if(visited[i] == next) return 1;
+		if(visited[i] == *next) return 1;
 	}
 	return 0;
 }
