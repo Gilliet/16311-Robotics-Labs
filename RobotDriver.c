@@ -3,6 +3,9 @@
 #define K .009
 #define D -.1
 
+#define SPEED1 20
+#define SPEED2 40
+#define SPEED3 65
 int vtop (float v) {
 	return (int)((102.313 * v) + 0.000179047);
 }
@@ -67,16 +70,33 @@ void driveTo(robotModel* rob, float des_x,float des_y)
 		int LM = vtop(outvl);
 		int RM = vtop(outvr);
 		/* STRAIGHT LINE */
-		if (rob->t - startt < 3 ) {
-			if (RM > 10) RM = 10;
-			if (RM < -10) RM = -10;
-			if (LM > 10) LM = 10;
-			if (LM < -10) LM = -10;
+		if (rob->t - startt < 2 ) {
+			if (RM > SPEED1) RM = SPEED1;
+			if (RM < -SPEED1) RM = -SPEED1;
+			if (LM > SPEED1) LM = SPEED1;
+			if (LM < -SPEED1) LM = -SPEED1;
+			if (RM > 0 && RM < SPEED1) RM = SPEED1;
+			if (RM < 0 && RM > -SPEED1) RM = -SPEED1;
+			if (LM > 0 && LM < SPEED1) LM = SPEED1;
+			if (LM < 0 && LM > -SPEED1) LM = -SPEED1;
+			} else if (rob->t - startt < 4) {
+			if (RM > SPEED2) RM = SPEED2;
+			if (RM < -SPEED2) RM = -SPEED2;
+			if (LM > SPEED2) LM = SPEED2;
+			if (LM < -SPEED2) LM = -SPEED2;
+			if (RM > 0 && RM < SPEED2) RM = SPEED2;
+			if (RM < 0 && RM > -SPEED2) RM = -SPEED2;
+			if (LM > 0 && LM < SPEED2) LM = SPEED2;
+			if (LM < 0 && LM > -SPEED2) LM = -SPEED2;
 			} else {
-			if (RM > 50) RM = 50;
-			if (RM < -50) RM = -50;
-			if (LM > 50) LM = 50;
-			if (LM < -50) LM = -50;
+			if (RM > SPEED3) RM = SPEED3;
+			if (RM < -SPEED3) RM = -SPEED3;
+			if (LM > SPEED3) LM = SPEED3;
+			if (LM < -SPEED3) LM = -SPEED3;
+			if (RM > 0 && RM < SPEED1) RM = SPEED1;
+			if (RM < 0 && RM > -SPEED1) RM = -SPEED1;
+			if (LM > 0 && LM < SPEED1) LM = SPEED1;
+			if (LM < 0 && LM > -SPEED1) LM = -SPEED1;
 		}
 		motor[motorC] = RM;
 		motor[motorB] = LM;

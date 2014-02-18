@@ -142,8 +142,9 @@ int DFS (int depth, int currNode, int goalNode) {
 task main()
 {
 	float startx = .15;
-	float starty = .15;
-	float goalx =  3 * .15;
+	float starty = 7 * .15;
+	float startpose = 0;
+	float goalx =  15 * .15;
 	float goaly = 5 * .15;
 	float startmin = 0;
 	float startdist = abs(startx - xNode(0)) + abs(starty - yNode(0));
@@ -174,7 +175,7 @@ task main()
 
 	int i = 0;
 	robotModel rob;
-	init(&rob,startx* 100,starty * 100,PI / 2);
+	init(&rob,startx* 100,starty * 100,startpose);
 	while (path[i] != -1) {
 		float tempx = xNode(path[i]);
 		float tempy = yNode(path[i]);
