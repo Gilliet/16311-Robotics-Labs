@@ -1,9 +1,9 @@
 #include "RobotModel.h"
 
 void init (robotModel* rob,float stx,float sty,float stpose) {
-	rob->x = 0.0;
-	rob->y = 0.0;
-	rob->pose = 0.0;
+	rob->x = stx;
+	rob->y = sty;
+	rob->pose = stpose;
 	rob->V = 0.0;
 	rob->w = 0.0;
 	rob->lenc = nMotorEncoder[motorC];
@@ -29,7 +29,7 @@ void update (robotModel* rob) {
 	rob->pose += rob->w;
 	if (rob->pose > 2*PI) {
 		rob->pose -= 2*PI;
-	} else if (rob->pose < -2*PI) {
+	} else if (rob->pose < 0) {
 		rob->pose += 2*PI;
 	}
 	float tcurr = time10[T2];
