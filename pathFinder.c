@@ -131,9 +131,51 @@ task main()
 	botPath.coords[0] = startx;
 	botPath.coords[1] = starty;
 
-	node visitedNodes[14];
 	int yay = 0;
-	yay = DFS(&botPath, &st, &goal);
+
+	node *stack[12];
+	node *visited[12];
+	int stackCount = 0;
+	int visitCount = 0;
+	stack[stackCount] = &st;
+	stackCount++; // Put the first node in the stack.
+	node* currNode;
+	while (stackCount > 0) { // While there are still nodes to examine.
+		stackCount--;
+		currNode = stack[stackCount]; // Pop the stack.
+		int av = 0;
+		for(int i = 0; i < visitCount; i++) {
+			if(visited[i].x == currNode->x && visited[i].y == currNode->y) av = 1;
+		}
+		if (!av) { // If we have not already visited the node.
+			visited[visitCount] = currNode; // Visit the node.
+			visitCount++;
+			writeDebugStream("Visiting: %f,%f\n", currNode->x,currNode->y);
+			botPath.coords[2 * botPath.nElems] = currNode->x; // Add the node to the path.
+			botPath.coords[2 * botPath.nElems + 1] = currNode->y;
+			botPath.nElems++;
+			if (currNode->x == goal.x && currNode->y == goal.y) {
+				writeDebugStream("We are done!\n");
+				yay =  1;// If we are at the goal then we are done.
+				break;
+			}
+			writeDebugStream("aslkjfdajfhasd: %f\n",currNode->neighbors[0]);
+			for (int i = 0; i < 5; i++) { // Otherwise add every neighbor to the stack.
+				if (currNode->neighbors[i] != NULL) {
+					stack[stackCount] = (currNode->neighbors[i]);
+					stackCount++;
+				}
+			}
+			} else {
+			botPath.nElems--; // If we could not find the goal then backtrack.
+		}
+	}
+	yay = 0; // We failed to find a path.
+
+
+
+
+
 
 
 	if (!yay) writeDebugStream("DFS unsuccessful! \n");

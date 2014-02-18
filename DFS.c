@@ -10,17 +10,18 @@ typedef struct graphNode{
 // Path struct. It's good stuff.
 typedef struct path {
 	int nElems;
-	float coords[16];
+	float coords[18];
 } path;
 
+/*
 // Small helper.
-int alreadyVisited (node* visited, int n, node next) {
+int alreadyVisited (node** visited, int n, node next) {
 	for(int i = 0; i < n; i++) {
-		if(visited[i].x == next.x && visited[i].y == next.y) return 1;
+		if(visited[i]->x == next.x && visited[i]->y == next.y) return 1;
 	}
 	return 0;
 }
-/*
+
 int DFS (path* p, node* currNode, node* endNode, node* visited, int nVisited) {
 	// Mark the current node as visited.
 	writeDebugStream("visiting: (%f2,%f2)\n",currNode->x,currNode->y);
@@ -72,33 +73,33 @@ int DFS (path* p, node* currNode, node* endNode, node* visited, int nVisited) {
 		// successful recursive calls, so we shouldn't have to reset anything.
 	}
 }
-*/
+
 
 int DFS (path* p, node* startNode, node* endNode) {
-	node stack[12];
-	node visited[12];
+	node *stack[12];
+	node *visited[12];
 	int stackCount = 0;
 	int visitCount = 0;
-	stack[stackCount] = *startNode;
+	stack[stackCount] = startNode;
 	stackCount++; // Put the first node in the stack.
-	node currNode;
+	node* currNode;
 	while (stackCount > 0) { // While there are still nodes to examine.
-		currNode = stack[stackCount]; // Pop the stack.
 		stackCount--;
-		if (!alreadyVisited(visited,visitCount,currNode)) { // If we have not already visited the node.
+		currNode = &(stack[stackCount]); // Pop the stack.
+		if (!alreadyVisited(visited,visitCount,*currNode)) { // If we have not already visited the node.
 			visited[visitCount] = currNode; // Visit the node.
 			visitCount++;
-			writeDebugStream("Visiting: %f,%f\n", currNode.x,currNode.y);
-			p->coords[2 * p->nElems] = currNode.x; // Add the node to the path.
-			p->coords[2 * p->nElems + 1] = currNode.y;
+			writeDebugStream("Visiting: %f,%f\n", currNode->x,currNode->y);
+			p->coords[2 * p->nElems] = currNode->x; // Add the node to the path.
+			p->coords[2 * p->nElems + 1] = currNode->y;
 			p->nElems++;
-			if (currNode.x == endNode->x && currNode.y == endNode->y) {
+			if (currNode->x == endNode->x && currNode->y == endNode->y) {
 				writeDebugStream("We are done!\n");
 				return 1;// If we are at the goal then we are done.
 			}
 			for (int i = 0; i < 5; i++) { // Otherwise add every neighbor to the stack.
-				if (currNode.neighbors[i] != NULL) {
-					stack[stackCount] = *(currNode.neighbors[i]);
+				if (currNode->neighbors[i] != NULL) {
+					stack[stackCount] = (currNode->neighbors[i]);
 					stackCount++;
 				}
 			}
@@ -107,5 +108,5 @@ int DFS (path* p, node* startNode, node* endNode) {
 		}
 	}
 	return 0; // We failed to find a path.
-
 }
+*/

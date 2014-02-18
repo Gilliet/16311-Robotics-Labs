@@ -162,7 +162,7 @@ writeDebugStream("set up neighbors, except for start and goal.\n");
   //assumption: from path, we get a float * of points to travel to
   path *traveledPath;
   node visitedNodes[14];
-  int yay = DFS (traveledPath, &st, &goal, visitedNodes, 0);
+  int yay =0;// DFS (traveledPath, st, goal);
   if (!yay) writeDebugStream("DFS unsuccessful! \n");
   //path[0] = st.x; path[1] = st.y;
   //path[2] = goal.x; path[3] = goal.y;
