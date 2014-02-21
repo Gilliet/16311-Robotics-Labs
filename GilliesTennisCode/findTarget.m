@@ -57,10 +57,10 @@ imshow((thresh));
 title('threshed');
 
 %now clean it up! dilate to make blobs cohere, then erode
-SEE0 = strel('disk',3,4);
+SEE0 = strel('disk',4,4);
 e0 = imerode(thresh,SEE0);
 
-SED = strel('disk',11,4);
+SED = strel('disk',14,4);
 dil = imdilate(e0,SED);
 
 SEE = strel('disk',3,4);
@@ -89,7 +89,7 @@ segname = strcat('intermed/segmented',whichIm);
 %imshow(hsv2rgb(visRaster));
 %title('segmented');
 
-
+cntr
 [areas,indexedSizes] = findAreas(rs,cntr,H,W);
 indexedSizes
 %areas
@@ -106,7 +106,7 @@ indexedCents
 
 %visualize the centroids
 visCentroids = in_hsv;
-visCentroids(:,:,1) = rs/255;
+visCentroids(:,:,1) = rs/20;
 visCentroids(:,:,2) = ones(H,W);
 visCentroids(:,:,3) = erod;
 for x=1:1:4
