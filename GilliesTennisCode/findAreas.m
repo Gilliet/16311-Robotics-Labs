@@ -54,7 +54,9 @@ for x=1:1:size(areas)
             evict(1) = x;
         end   
 end
-areas(evict(1)) = -1;
+if (evict(1) ~= 0) 
+    areas(evict(1)) = -1;
+end
 
 for x=1:1:size(areas)
         if (areas(x) > fourBiggest(2))
@@ -62,7 +64,9 @@ for x=1:1:size(areas)
             evict(2) = x;
         end    
 end
-areas(evict(2)) = -2;
+if (evict(2) ~= 0) 
+    areas(evict(2)) = -2;
+end
 
 for x=1:1:size(areas)
         if (areas(x) > fourBiggest(3))
@@ -70,7 +74,9 @@ for x=1:1:size(areas)
             evict(3) = x;
         end   
 end
-areas(evict(3)) = -3;
+if (evict(3) ~= 0) 
+    areas(evict(3)) = -3;
+end
 
 for x=1:1:size(areas)
         if (areas(x) > fourBiggest(4))
@@ -78,7 +84,9 @@ for x=1:1:size(areas)
             evict(4) = x;
         end    
 end
-areas(evict(4)) = -4;
+if (evict(4) ~= 0) 
+    areas(evict(4)) = -4;
+end
 
 for x=1:1:size(areas)
         if(areas(x) >= 0)
@@ -97,6 +105,19 @@ for x=1:1:4
     indexedBiggest(x,1) = fourBiggest(x);
     indexedBiggest(x,2) = evict(x);
 end
+
+%if it's too small, just zero it out
+avgSize = (fourBiggest(1)+fourBiggest(2)+fourBiggest(3)+fourBiggest(4))/4
+
+for x=1:1:4
+    if (indexedBiggest(x,1) < 0.5*avgSize)
+        indexedBiggest(x,1) = 0;
+        areas(x) = 0;
+        fprintf('evicting\n');
+    end 
+    
+end
+
 end
 
 

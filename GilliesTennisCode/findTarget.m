@@ -5,7 +5,7 @@
 % 
 % 1/16/2014
 
-function [] = findTarget(image_path, output_path)
+function [] = findTarget(image_path)%, output_path)
 %fprintf('image path: %s\n',image_path);
 % FINDTARGET - Finds the tennis ball targets! 
 % Usage:
@@ -38,7 +38,7 @@ for x=1:1:H
     for y=1:1:W   %get bright yellow-green pixels 
         if((in_hsv(x,y,1) > 44/255) && (in_hsv(x,y,1) < 55/255) ...
             && (in_hsv(x,y,2) > 70/255) && (in_hsv(x,y,2) < 225/255) ...
-            && (in_hsv(x,y,3) > 85/255) && (in_hsv(x,y,3) < 250/255))
+            && (in_hsv(x,y,3) > 65/255) && (in_hsv(x,y,3) < 250/255))
             thresh(x,y) = 1.0;
         end
     end
@@ -51,18 +51,27 @@ whichIm =image_path(strt:en);
 whichIm = strcat(whichIm,'.png');
 %write threshed image file
 threshname = strcat('intermed/thresh',whichIm);
-imwrite(thresh,threshname);
+%imwrite(thresh,threshname);
+figure;
+imshow((thresh));
+title('threshed');
 
 %now clean it up! dilate to make blobs cohere, then erode
-SED = strel('disk',10,4);
-dil = imdilate(thresh,SED);
+SEE0 = strel('disk',4,4);
+e0 = imerode(thresh,SEE0);
+
+SED = strel('disk',14,4);
+dil = imdilate(e0,SED);
 
 SEE = strel('disk',3,4);
 erod = imerode(dil,SEE);
 
 %write cleaned image file
 cleanname = strcat('intermed/clean',whichIm);
-imwrite(erod,cleanname);
+%imwrite(erod,cleanname);
+%figure;
+%imshow((erod));
+%title('eroded.')
 
 %next, do segmentation- double raster segmentation as described in class
 rs = erod; 
@@ -75,29 +84,37 @@ visRaster(:,:,3) = erod;
 
 %write segmented image file
 segname = strcat('intermed/segmented',whichIm);
-imwrite(hsv2rgb(visRaster),segname);
+%imwrite(hsv2rgb(visRaster),segname);
+%figure;
+%imshow(hsv2rgb(visRaster));
+%title('segmented');
 
+cntr
 [areas,indexedSizes] = findAreas(rs,cntr,H,W);
+indexedSizes
+%areas
 [cents,indexedCents] = findCentroids(rs,areas,indexedSizes,cntr,H,W);
+indexedCents
+%cents
 %indexedSizes and indexedCents are aligned, with the blob of size i at i,1 
 %     in both. indexedSizes also stores its counter number, and
 %     indexedCents also stores its centroid. 
 
 %uh gives the distance from the target, as specified by the centroids
 %and areas in indexedCents
-uh = triangulate(indexedCents);
+%uh = triangulate(indexedCents);
 
 %visualize the centroids
 visCentroids = in_hsv;
-visCentroids(:,:,1) = rs/255;
+visCentroids(:,:,1) = rs/20;
 visCentroids(:,:,2) = ones(H,W);
 visCentroids(:,:,3) = erod;
-for x=1:1:cntr
-        if(cents(x,1) ~= 0)
+for x=1:1:4
+        if(indexedCents(x,1) ~= 0)
             o = 0.08;
             b = 0.65;
-            temp1 = int32(cents(x,1));
-            temp2 = int32(cents(x,2)); 
+            temp1 = int32(indexedCents(x,2));
+            temp2 = int32(indexedCents(x,3)); 
             
             for y=0:1:6
                 visCentroids(temp1,temp2,1) = o;
@@ -121,18 +138,20 @@ end
 
 %write the centroids image file
 centsname = strcat('intermed/cents',whichIm);
-imwrite(hsv2rgb(visCentroids),centsname);
+figure;
+imshow(hsv2rgb(visCentroids));
+%imwrite(hsv2rgb(visCentroids),centsname);
 
 %% 3. File I/O
 
 % First we open a file and get a file ID # with fopen(). 'w' specifies we
 % want to write.
-output_path = 'distances.txt';
-file_id = fopen(output_path, 'a+');
-if file_id == -1    % -1 is an invalid file ID and signals failure
-    fprintf('File creation failed!\n');
-    return;
-end
+%output_path = 'distances.txt';
+%file_id = fopen(output_path, 'a+');
+%if file_id == -1    % -1 is an invalid file ID and signals failure
+%    fprintf('File creation failed!\n');
+%    return;
+%end
 
 % Now we can write to the file using fprintf (formatted print to file)
 % fprintf uses a format specifier string, where %d represents an integer
@@ -145,7 +164,7 @@ end
 % of the terminal.
 
 %write distances to file
-fprintf(file_id, 'distance from camera in %s: %f5 feet\r\n',whichIm,uh);
+%fprintf(file_id, 'distance from camera in %s: %f5 feet\r\n',whichIm,uh);
 
 % Finally when you're done, you should close the file with fclose()
-fclose(file_id);
+%fclose(file_id);
