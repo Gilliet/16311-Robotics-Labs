@@ -1,0 +1,8 @@
+distance from camera in L02.png: 1.9990705 feet
+distance from camera in B02.png: 1.9995005 feet
+distance from camera in L04.png: 3.9721195 feet
+distance from camera in B04.png: 3.9770425 feet
+distance from camera in L08.png: 8.1044345 feet
+distance from camera in B08.png: 8.0809715 feet
+distance from camera in L16.png: 15.8667595 feet
+distance from camera in B16.png: 15.9108815 feet
