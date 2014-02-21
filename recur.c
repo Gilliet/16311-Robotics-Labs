@@ -141,11 +141,11 @@ int DFS (int depth, int currNode, int goalNode) {
 
 task main()
 {
-	float startx = .15;
-	float starty = 7 * .15;
-	float startpose = 0;
-	float goalx =  15 * .15;
-	float goaly = 5 * .15;
+	float startx = .2286;
+	float starty = .3048;
+	float startpose =  PI / 2;
+	float goalx =  .4572;
+	float goaly = .762;
 	float startmin = 0;
 	float startdist = abs(startx - xNode(0)) + abs(starty - yNode(0));
 	float goalmin = 0;

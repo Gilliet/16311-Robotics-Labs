@@ -4,8 +4,8 @@
 #define D -.1
 
 #define SPEED1 20
-#define SPEED2 40
-#define SPEED3 65
+#define SPEED2 45
+#define SPEED3 70
 int vtop (float v) {
 	return (int)((102.313 * v) + 0.000179047);
 }
