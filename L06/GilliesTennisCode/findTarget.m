@@ -102,7 +102,15 @@ segname = strcat('intermed/segmented',whichIm);
 
 %uh gives the distance from the target, as specified by the centroids
 %and areas in indexedCents
-[x,y,theta] = triangulate(indexedCents);
+[ors] = triangulate(indexedCents);
+c = 0;
+for x=1:1:4
+    if(ors(x,1) ~= 0)
+        fprintf('x%d:%3.2f y%d:%3.2f th%d:%3.2f\n',x,ors(x,1),x,ors(x,2),x,ors(x,3));
+        c = c+1;
+    end
+end
+fprintf(' tennis balls: %d\n\n',c);
 
 %visualize the centroids
 visCentroids = in_hsv;
