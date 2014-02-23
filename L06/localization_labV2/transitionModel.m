@@ -19,7 +19,6 @@ newPM = (ones(xsize,ysize,tsize))*(min(pM(:)));
 dx = dPose(1);
 dy = dPose(2);
 dth = dPose(3);
-disp([xsize,ysize,tsize]);
 for th = 1:tsize
     worldth = th * DTH;
     wrapth = worldth + dth;
