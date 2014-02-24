@@ -22,12 +22,8 @@ dth = dPose(3);
 for th = 1:tsize
     worldth = th * DTH;
     wrapth = worldth + dth;
-        if (wrapth > 2 * pi)
-            wrapth = wrapth - 2 * pi;
-        elseif (wrapth < .1)
-            wrapth = wrapth + 2 * pi;
-        end
-    newth = ceil((wrapth) / DTH);
+    wrapth = wrapTo2Pi(wrapth);
+    newth = round((wrapth) / DTH);
     for x = 1:xsize
         for y = 1:ysize
             worldx = x * DX;
@@ -37,28 +33,23 @@ for th = 1:tsize
                    0       ,      0,  1];
             pose = [dx;dy;1];
             newpose = mat * pose;
-            newx = ceil((newpose(1)) / DX);
-            newy = ceil((newpose(2)) / DY);
+
+            newx = round(newpose(1) / DX);
+            newy = round(newpose(2) / DY);
             if (newth > 0 && newx > 0 && newy > 0 && newth <= tsize && newx <= xsize && newy <= ysize)
-%                disp([newx,newy,newth]);
-%                newPM(x ,y,th) = pM(newx,newy,newth);
-                 xOff = x-newx;
-                 yOff = y-newy;
-                 tOff = th-newth;
-                % newPM(x,y,th) = pM(x-xOff,y-yOff,th-tOff);
-                newPM(newx ,newy,newth) = pM(x,y,th);
+%                 newPM(x,y,th) = pM(x-xOff,y-yOff,th-tOff);
+                 newPM(x ,y,th) = pM(newx,newy,newth);
 %                disp([newx,newy,newth]);
             else
+                
             end
-            
-            
         end
     end
 end
 
 %disp(dPose);
 %pause();
-outPM = pM;
+outPM = newPM;
 
 
 %first, shift
