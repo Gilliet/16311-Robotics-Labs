@@ -32,8 +32,8 @@ for th = 1:tsize
         for y = 1:ysize
             worldx = x * DX;
             worldy = y * DY;
-            mat = [cos(worldth), -sin(worldth), worldx;
-                   sin(worldth), cos(worldth),  worldy;
+            mat = [cos(worldth), sin(worldth), worldx;
+                   -sin(worldth), cos(worldth),  worldy;
                    0       ,      0,  1];
             pose = [dx;dy;1];
             newpose = mat * pose;
@@ -41,7 +41,12 @@ for th = 1:tsize
             newy = ceil((newpose(2)) / DY);
             if (newth > 0 && newx > 0 && newy > 0 && newth <= tsize && newx <= xsize && newy <= ysize)
 %                disp([newx,newy,newth]);
-                newPM(x ,y,th) = pM(newx,newy,newth);
+%                newPM(x ,y,th) = pM(newx,newy,newth);
+                 xOff = x-newx;
+                 yOff = y-newy;
+                 tOff = th-newth;
+                % newPM(x,y,th) = pM(x-xOff,y-yOff,th-tOff);
+                newPM(newx ,newy,newth) = pM(x,y,th);
 %                disp([newx,newy,newth]);
             else
             end
@@ -51,8 +56,9 @@ for th = 1:tsize
     end
 end
 
-
-outPM = newPM;
+%disp(dPose);
+%pause();
+outPM = pM;
 
 
 %first, shift
@@ -60,4 +66,6 @@ outPM = newPM;
 %second, blur
 %make gaussian: make 3 1-d gaussians and convolve it with each of them? :(
 %how big do i make each 1-d gaussian? i guess as big as the dimension
+
+%smooth3(outPM,'gaussian',9);
 end

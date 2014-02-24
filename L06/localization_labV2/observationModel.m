@@ -14,7 +14,7 @@ global DTH;      %discretization along th
 %step 1: take noise out of measurements @_@ 
 %specifically, the measurements seem to be a very noisy picture
 % of just one or two tennis balls
-measurement;
+oldPM = pM;
 
 numMeasures = size(measurement);
 
@@ -73,25 +73,20 @@ end
 range = ball1range;
 bear = ball1bear;
 %disp([ball1bear,ball2bear,ball3bear]);
-%disp(numBalls);
+disp([range,bear]);
 tennisBalls = [
      2,    28;
-
      2,    47;
-
      5,     2;
-
     11,    20;
-
     20,    13];
+
 %disp(size(map));
 for th = 1:size(pM,3)
     worldth = th * DTH;
     for x = 1:size(pM,1)
         for y = 1:size(pM,2)
-            if (map(x,y) ~= 0)
-                pM(x,y,th) = 0;
-            end
+            
             worldx = x * DX;
             worldy = y * DY;
             for ball = 1:size(tennisBalls,1)
@@ -101,7 +96,7 @@ for th = 1:size(pM,3)
                 if (abs(worldth - angle) < pi / 6)
                     % IN RANGE
                     fail = 0;
-                    for lambda = 0:.01:1
+                    for lambda = 0:.09:1
                         scrutx = worldx * lambda + (1 - lambda) * ballx;
                         scruty = worldy * lambda + (1 - lambda) * bally;
                         discx = ceil(scrutx / DX);
@@ -113,10 +108,21 @@ for th = 1:size(pM,3)
                         end
                     end
                     if (fail == 0)
-                        disp([]);
-                        pM(x,y,th) = pM(x,y,th) + .3;
+                        %disp([]);
+                        pM(x,y,th) = pM(x,y,th);% + 0.1;%.3;
+                        riseoverrun = sqrt((worldy - bally) ^ 2 + (worldx - ballx) ^ 2);
+                        if(abs(angle-(bear + worldth)) < 0.09)
+                            if(abs(riseoverrun - range) < 0.05) 
+                                pM(x,y,th) = pM(x,y,th) * 1.0001 + 0.0000001;
+%                            disp([ballx,bally]);
+                              %  disp(angle);
+                            end
+                           % pM(x,y,th) = pM(x,y,th) * 1.0001 + 0.0000001;
+                        else
+                            pM(x,y,th) = pM(x,y,th) * (1-0.001*abs(angle-(bear + worldth)));% - (0.001*abs(riseoverrun - range));
+                        end
                     else
- %                       pM(x,y,th) = pM(x,y,th) - .5;
+                        %pM(x,y,th) = pM(x,y,th) - .005;
                     end
                 end
             end
@@ -124,4 +130,8 @@ for th = 1:size(pM,3)
     end
 end
 
+%to turn off observation model. 
+%pM = oldPM;
+%pM = smooth3(pM,'gaussian',5);
+pause();
 end
