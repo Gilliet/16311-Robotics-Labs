@@ -24,8 +24,8 @@ oldPM = pM;
 xsize = size(pM,1);
 ysize = size(pM,2);
 tsize = size(pM,3);
-ptimes = 1.1;
-pinc = 0.02;
+ptimes = 1.001;
+pinc = 0.000002;
 
 for ball = (1:size(tennisBalls,1))
     for i = (1:size(measurement,1))
@@ -36,21 +36,31 @@ for ball = (1:size(tennisBalls,1))
         for angle = 0:.2:2*pi
             candx = ballx + cos(angle) * range;
             candy = bally + sin(angle) * range;
-            w = atan2(candy - bally, candx - ballx);
+            w = pi/2 - atan2(candy - bally, candx - ballx);
             candth = pi / 2 + w - bearing;
             discx = ceil(candx / DX);
             discy = ceil(candy / DY);
             discth = ceil(candth / DTH);
             fail = 0;
-            for lam = 0:0.01:1
-                scrutx = ceil(lam * candx + (1-lam) * ballx);
-                scruty = ceil(lam * candy + (1-lam) * bally);
+            for lam = 0:0.09:1
+                scrutx = ceil((lam * candx + (1-lam) * ballx)/DX);
+                scruty = ceil((lam * candy + (1-lam) * bally)/DY);
+          %      disp([candx,candy]);
+          %      disp([ballx,bally]);
+          %      disp([scrutx,scruty]);
+           %     pause();
                 if (scrutx > 0 && scruty > 0 && scrutx < xsize && scruty < ysize && map(scrutx,scruty) == 1)
                     fail = 1;
+
                 end
+            end
+            if (fail == 0)
+            %    disp('good candidate');
             end
             if (fail ~= 1 && discx > 0 && discy > 0 && discth > 0 && discx < xsize && discy < ysize && discth < tsize)
                 pM(discx,discy,discth) = pM(discx,discy,discth) * ptimes + pinc;
+              %  disp('found a thing');
+             %   pause();
             end
         end
     end
