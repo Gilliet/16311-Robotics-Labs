@@ -19,36 +19,30 @@ newPM = (ones(xsize,ysize,tsize))*(min(pM(:)));
 dx = dPose(1);
 dy = dPose(2);
 dth = dPose(3);
+
 for th = 1:tsize
-    worldth = th * DTH;
-    wrapth = worldth + dth;
-    wrapth = wrapTo2Pi(wrapth);
-    newth = round((wrapth) / DTH);
+    worldth = th * DTH; %% Translate to world coordinates
+    wrapth = wrapTo2Pi(worldth + dth); %% Increment and wrap the theta value.
+    newth = round((wrapth) / DTH); %% Translate the new theta value back to coordinate frame.
+    mat = [cos(wrapth), sin(wrapth), 0;
+          -sin(wrapth), cos(wrapth), 0;
+                   0       ,      0,  1];
+    transpose = mat * [dx;dy;1]; %% Rotate the delta x and y to world frame.
+    worlddx = transpose(1);
+    worlddy = transpose(2);
     for x = 1:xsize
         for y = 1:ysize
-            worldx = x * DX;
-            worldy = y * DY;
-            mat = [cos(worldth), sin(worldth), worldx;
-                   -sin(worldth), cos(worldth),  worldy;
-                   0       ,      0,  1];
-            pose = [dx;dy;1];
-            newpose = mat * pose;
-
-            newx = round(newpose(1) / DX);
-            newy = round(newpose(2) / DY);
+            newx = round((x * DX + worlddx) / DX); %% Compute the new x and y values.
+            newy = round((y * DY + worlddy) / DY);
             if (newth > 0 && newx > 0 && newy > 0 && newth <= tsize && newx <= xsize && newy <= ysize)
-%                 newPM(x,y,th) = pM(x-xOff,y-yOff,th-tOff);
-                 newPM(x ,y,th) = pM(newx,newy,newth);
-%                disp([newx,newy,newth]);
-            else
-                
+                 %newPM(x,y,th) = pM(newx,newy,newth);
+                 newPM(newx,newy,th) = pM(x,y,newth);
             end
         end
     end
 end
 
 %disp(dPose);
-%pause();
 outPM = newPM;
 
 

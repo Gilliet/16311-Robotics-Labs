@@ -8,11 +8,16 @@ global DX;        %discretization along x axis
 global DY;       %discretization along y axis
 global DTH;      %discretization along th
 tennisBalls = [
-     2,    28;
-     2,    47;
-     5,     2;
-    11,    20;
-    20,    13];
+     2,29;
+     2,47;
+    10,23;
+    11,8;
+    18,4;
+    20,20];
+
+
+disp(measurement);
+
 
 %TODO given the measurement, map, and current probability map update the
 %probability map 
@@ -21,11 +26,12 @@ tennisBalls = [
 %specifically, the measurements seem to be a very noisy picture
 % of just one or two tennis balls
 oldPM = pM;
+newPM = ones(size(pM,1),size(pM,2),size(pM,3)) * (min(pM(:)));
 xsize = size(pM,1);
 ysize = size(pM,2);
 tsize = size(pM,3);
-ptimes = 1.001;
-pinc = 0.000002;
+ptimes = 1.01;
+pinc = 0.00001;
 
 for ball = (1:size(tennisBalls,1))
     for i = (1:size(measurement,1))
@@ -38,17 +44,13 @@ for ball = (1:size(tennisBalls,1))
             candy = bally + sin(angle) * range;
             w = pi/2 - atan2(candy - bally, candx - ballx);
             candth = pi / 2 + w - bearing;
-            discx = ceil(candx / DX);
-            discy = ceil(candy / DY);
-            discth = ceil(candth / DTH);
+            discx = round(candx / DX);
+            discy = round(candy / DY);
+            discth = round(candth / DTH);
             fail = 0;
             for lam = 0:0.09:1
-                scrutx = ceil((lam * candx + (1-lam) * ballx)/DX);
-                scruty = ceil((lam * candy + (1-lam) * bally)/DY);
-          %      disp([candx,candy]);
-          %      disp([ballx,bally]);
-          %      disp([scrutx,scruty]);
-           %     pause();
+                scrutx = round((lam * candx + (1-lam) * ballx)/DX);
+                scruty = round((lam * candy + (1-lam) * bally)/DY);
                 if (scrutx > 0 && scruty > 0 && scrutx < xsize && scruty < ysize && map(scrutx,scruty) == 1)
                     fail = 1;
 
@@ -58,14 +60,14 @@ for ball = (1:size(tennisBalls,1))
             %    disp('good candidate');
             end
             if (fail ~= 1 && discx > 0 && discy > 0 && discth > 0 && discx < xsize && discy < ysize && discth < tsize)
-                pM(discx,discy,discth) = pM(discx,discy,discth) * ptimes + pinc;
+                newPM(discx,discy,discth) = pM(discx,discy,discth) * ptimes;
               %  disp('found a thing');
              %   pause();
             end
         end
     end
 end
-%pM = smooth3(pM,'gaussian',15);
+pM = pM .* smooth3(newPM,'gaussian',9);
 %pM = oldPM;
 end
 

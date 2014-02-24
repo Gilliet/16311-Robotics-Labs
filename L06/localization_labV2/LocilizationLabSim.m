@@ -15,7 +15,7 @@ config();
 %%%%%%%%%%%%%%%%%%  SETUP %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %coordinates x,y,th
-start  = [.9,1,pi/2];
+start  = [1,0.9,pi/2];
 finish = [0.2,0.2,1.0];
 finish(3) = wrapTo2Pi(finish(3)); %for end error checking
 
@@ -83,6 +83,7 @@ while(1)
         end
         
     end
+    pause();
 end
 gui(r,map,pM)
 calculateScore(r,finish);
