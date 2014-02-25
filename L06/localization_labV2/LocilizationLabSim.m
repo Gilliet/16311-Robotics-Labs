@@ -85,7 +85,7 @@ while(1)
         end
         
     end
-   
+   pause();
 end
 gui(r,map,pM)
 calculateScore(r,finish);
