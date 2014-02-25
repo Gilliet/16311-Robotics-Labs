@@ -4,7 +4,8 @@ function [] = LocilizationLabSim()
     %
     % Written by Trevor Decker (tdecker@andrew.cmu.edu) for CMU's 16-311
     % v0.1 2/21/2014
-    
+global DX;
+global DY;
 global DTH;      %Discretization along th
 global ROBOTMODEL;
 global MAXERRORTH;
@@ -31,6 +32,7 @@ r.setModel(ROBOTMODEL,'r');
 
 %pM stands for probability map 
 pM = ones(size(map,1),size(map,2),2*pi/DTH);
+%pM(round(1 /DX), round(0.9/DY),round((pi/2)/DTH)) = 1;
 pM = normilize(pM);
 
 %the best guess of where we currently are
@@ -83,7 +85,7 @@ while(1)
         end
         
     end
-    pause();
+   
 end
 gui(r,map,pM)
 calculateScore(r,finish);
@@ -148,12 +150,14 @@ end
 
 
 measurment = r.Sense(map);
+dPose
 pM = transitionModel(pM,dPose');
 for i = 1:size(pM,3)
     pM(:,:,i) = pM(:,:,i) + STEPERROR.*(~map);
 end
 pM = normilize(pM); %normilzes
 pM = observationModel(map,measurment,pM);
+pM = pM+1e-12;
 pM = normilize(pM); %normilzes
 
 end

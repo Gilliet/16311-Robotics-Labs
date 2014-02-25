@@ -24,10 +24,10 @@ for th = 1:tsize
     worldth = th * DTH; %% Translate to world coordinates
     wrapth = wrapTo2Pi(worldth + dth); %% Increment and wrap the theta value.
     newth = round((wrapth) / DTH); %% Translate the new theta value back to coordinate frame.
-    mat = [cos(wrapth), sin(wrapth), 0;
-          -sin(wrapth), cos(wrapth), 0;
+    mat = [cos(wrapth), -sin(wrapth), 0;
+          sin(wrapth), cos(wrapth), 0;
                    0       ,      0,  1];
-    transpose = mat * [dx;dy;1]; %% Rotate the delta x and y to world frame.
+    transpose = -[dx;dy;1]; %% Rotate the delta x and y to world frame.
     worlddx = transpose(1);
     worlddy = transpose(2);
     for x = 1:xsize
@@ -44,7 +44,7 @@ end
 
 %disp(dPose);
 outPM = newPM;
-
+%outPM = pM;
 
 %first, shift
 
@@ -52,5 +52,5 @@ outPM = newPM;
 %make gaussian: make 3 1-d gaussians and convolve it with each of them? :(
 %how big do i make each 1-d gaussian? i guess as big as the dimension
 
-%smooth3(outPM,'gaussian',9);
+smooth3(outPM,'gaussian',9,2);
 end

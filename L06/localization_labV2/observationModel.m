@@ -16,22 +16,21 @@ tennisBalls = [
     20,20];
 
 
+%disp('incoming:');
+%any(isnan(pM(:)))
 disp(measurement);
-
 
 %TODO given the measurement, map, and current probability map update the
 %probability map 
 
-%step 1: take noise out of measurements @_@ 
-%specifically, the measurements seem to be a very noisy picture
-% of just one or two tennis balls
+
 oldPM = pM;
-newPM = ones(size(pM,1),size(pM,2),size(pM,3)) * (min(pM(:)));
+newPM = zeros(size(pM,1),size(pM,2),size(pM,3)); %* (min(pM(:)));
 xsize = size(pM,1);
 ysize = size(pM,2);
 tsize = size(pM,3);
-ptimes = 1.01;
-pinc = 0.00001;
+ptimes = 1.05;
+
 
 for ball = (1:size(tennisBalls,1))
     for i = (1:size(measurement,1))
@@ -39,11 +38,11 @@ for ball = (1:size(tennisBalls,1))
         range = measurement(i,2);
         ballx = tennisBalls(ball,1) * DX;
         bally = tennisBalls(ball,2) * DY;
-        for angle = 0:.2:2*pi
+        for angle = 0:.005:2*pi
             candx = ballx + cos(angle) * range;
             candy = bally + sin(angle) * range;
-            w = pi/2 - atan2(candy - bally, candx - ballx);
-            candth = pi / 2 + w - bearing;
+            candth = pi - bearing + angle;
+            candth = wrapToPi(candth);
             discx = round(candx / DX);
             discy = round(candy / DY);
             discth = round(candth / DTH);
@@ -56,18 +55,31 @@ for ball = (1:size(tennisBalls,1))
 
                 end
             end
-            if (fail == 0)
-            %    disp('good candidate');
-            end
-            if (fail ~= 1 && discx > 0 && discy > 0 && discth > 0 && discx < xsize && discy < ysize && discth < tsize)
-                newPM(discx,discy,discth) = pM(discx,discy,discth) * ptimes;
+
+            if (discx > 0 && discy > 0 && discth > 0 && discx < xsize && discy < ysize && discth < tsize)
+                if(fail ~= 1)
+                    newPM(discx,discy,discth) = ptimes;
+%                else 
+%                    newPM(discx,discy,discth) = 0;
+                end
               %  disp('found a thing');
              %   pause();
             end
+            
         end
     end
 end
-pM = pM .* smooth3(newPM,'gaussian',9);
-%pM = oldPM;
+newPM = smooth3(newPM,'gaussian',15,1);
+%pM = newPM;
+pM = pM .* newPM;
+
+%disp('outgoing:');
+%any(isnan(pM(:)))
+
+if (isempty(measurement))
+    disp('no measurements!');
+    pM = oldPM;
+end
+%    pM = oldPM;
 end
 
