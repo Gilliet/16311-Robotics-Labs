@@ -33,38 +33,34 @@ task main()
 
 		//Driving!
 		if(abs(joystick.joy1_y2) > driveThresh){
-			motor[motorB] = joystick.joy1_y2;         // Motor B is assigned a power level equal to the right analog stick's Y-axis reading.
+			motor[motorB] = -joystick.joy1_y2;         // Motor B is assigned a power level equal to the right analog stick's Y-axis reading.
 			}else{
 			motor[motorB] = 0;                        // Motor B is stopped with a power level of 0.
 		}
 
 
 		if(abs(joystick.joy1_y1) > driveThresh){
-			motor[motorC] = joystick.joy1_y1;         // Motor C is assigned a power level equal to the left analog stick's Y-axis reading.
+			motor[motorC] = -joystick.joy1_y1;         // Motor C is assigned a power lev;el equal to the left analog stick's Y-axis reading.
 		}else{
 			motor[motorC] = 0;                        // Motor C is stopped with a power level of 0.
 		}
 
 		//Camera!
-	  if (joystick.joy1_Buttons(1)!=0 && joystick.joy1_Buttons(2) == 0){
+	  if (joy1Btn(1)!=0 && joy1Btn(2) == 0){
 	  	//the number here tells us which button. no idea of the mapping.
 	  	//go forward
 	  	int newcam = nMotorEncoder[motorA];
-	  	if (newCam < cfThresh) {
-	  		motor[motorA] = 10;
-	  	} else {
-	  		motor[motorA] = 0;
-	  	}
+	  			motor[motorA] = 10;
+
 		}
 
-		if (joystick.joy1_Buttons(1)!=0 && joystick.joy1_Buttons(2) == 0){
+		else if (joy1Btn(1)==0 && joy1Btn(2) != 0){
 	  	//go backward
 	  	int newcam = nMotorEncoder[motorA];
-	  	if (newCam < cbThresh) {
 	  		motor[motorA] = -10;
-	  	} else {
-	  		motor[motorA] = 0;
-	  	}
+
+		} else {
+			motor[motorA] = 0;
 		}
 
   }
